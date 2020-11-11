@@ -69,6 +69,7 @@ Token* Lexer::STRINGF() {
         buff += m_CurrentChar;
         consume();
     } while(m_CurrentChar != '"');
+    buff += m_CurrentChar;
     consume();
 
     return new Token(STRING, buff);
