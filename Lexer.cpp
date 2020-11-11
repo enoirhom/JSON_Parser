@@ -2,7 +2,7 @@
 #include <cctype>
 #include "Lexer.h"
 
-Lexer::Lexer(std::string &input) : m_Input(input) {
+Lexer::Lexer(const std::string &input) : m_Input(input) {
     m_Index = 0;
     m_CurrentChar = m_Input[m_Index];
     std::cout << "Create Lexer" << std::endl;
@@ -12,7 +12,7 @@ Lexer::~Lexer() {
     std::cout << "Delete Lexer" << std::endl;
 }
 
-Token Lexer::nextToken() {
+Token* Lexer::nextToken() {
     while (m_CurrentChar != '\0') {
         if (m_CurrentChar == ' ' || m_CurrentChar == '\t' ||
                 m_CurrentChar == '\n' || m_CurrentChar == '\r') {
@@ -21,22 +21,22 @@ Token Lexer::nextToken() {
         switch (m_CurrentChar) {
         case '{':
             consume();
-            return Token(LCURL, "{");
+            return new Token(LCURL, "{");
         case '}':
             consume();
-            return Token(RCURL, "}");
+            return new Token(RCURL, "}");
         case '[':
             consume();
-            return Token(LBRACK, "[");
+            return new Token(LBRACK, "[");
         case ']':
             consume();
-            return Token(RBRACK, "]");
+            return new Token(RBRACK, "]");
         case ':':
             consume();
-            return Token(COLON, ":");
+            return new Token(COLON, ":");
         case ',':
             consume();
-            return Token(COMMA, ",");
+            return new Token(COMMA, ",");
         default:
             if (m_CurrentChar == '"') {
                 return STRINGF();
@@ -48,7 +48,7 @@ Token Lexer::nextToken() {
             }
         }
     }
-    return Token(EOF_TYPE, "<EOF>");
+    return new Token(EOF_TYPE, "<EOF>");
 }
 
 void Lexer::consume() {
@@ -63,22 +63,23 @@ void Lexer::WS() {
     }
 }
 
-Token Lexer::STRINGF() {
+Token* Lexer::STRINGF() {
     std::string buff;
     do {
         buff += m_CurrentChar;
         consume();
     } while(m_CurrentChar != '"');
+    consume();
 
-    return Token(STRING, buff);
+    return new Token(STRING, buff);
 }
 
-Token Lexer::NUMBERF() {
+Token* Lexer::NUMBERF() {
     std::string buff;
     do {
         buff += m_CurrentChar;
         consume();
     } while(isdigit(m_CurrentChar));
 
-    return Token(NUMBER, buff);
+    return new Token(NUMBER, buff);
 }
