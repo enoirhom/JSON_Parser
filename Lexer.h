@@ -17,8 +17,13 @@ private:
     std::string m_Input;
 
     void consume();
+    void consume(std::string &buff);
 
     void WS();
     Token* STRINGF();
     Token* NUMBERF();
+    void INTEGERF(std::string &buff);
+    void FRACTIONF(std::string &buff);
+    void EXPONENTF(std::string &buff);
+    void DIGITS(std::string &buff);
 };
