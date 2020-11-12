@@ -68,9 +68,14 @@ Token* Lexer::STRINGF() {
     do {
         buff += m_CurrentChar;
         consume();
-    } while(m_CurrentChar != '"');
-    buff += m_CurrentChar;
-    consume();
+    } while(m_CurrentChar == '_' || isalpha(m_CurrentChar));
+
+    if (m_CurrentChar == '"') {
+        buff += m_CurrentChar;
+        consume();
+    } else {
+        throw "invalid char in string";
+    }
 
     return new Token(STRING, buff);
 }
