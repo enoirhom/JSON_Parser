@@ -17,6 +17,7 @@ Token* Lexer::nextToken() {
         if (m_CurrentChar == ' ' || m_CurrentChar == '\t' ||
                 m_CurrentChar == '\n' || m_CurrentChar == '\r') {
             WS();
+            continue;
         }
         switch (m_CurrentChar) {
         case '{':
