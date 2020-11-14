@@ -73,15 +73,28 @@ void Lexer::WS() {
 
 Token* Lexer::STRINGF() {
     std::string buff;
-    do {
+
+    consume();
+
+    while (m_CurrentChar != '"' && m_CurrentChar != '\0') {
+        if (m_CurrentChar == '\\') {
+            consume(buff);
+            if (!(m_CurrentChar == '"' || m_CurrentChar == '\\' || m_CurrentChar == '/' ||
+                    m_CurrentChar == 'b' || m_CurrentChar == 'f' ||
+                    m_CurrentChar == 'n' || m_CurrentChar == 'r' ||
+                    m_CurrentChar == 't')) {
+                printState();
+                throw "invalid escape char";
+            }
+        }
         consume(buff);
-    } while(m_CurrentChar == '_' || isalpha(m_CurrentChar));
+    }
 
     if (m_CurrentChar == '"') {
-        consume(buff);
+        consume();
     } else {
         printState();
-        throw "invalid char in string";
+        throw "reaching end of file before end of string";
     }
 
     return new Token(STRING, buff);
