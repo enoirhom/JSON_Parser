@@ -1,5 +1,6 @@
 #pragma once
 
+#include <fstream>
 #include "Token.h"
 
 class Lexer {
@@ -14,7 +15,7 @@ public:
 private:
     char m_CurrentChar;
     int m_Index;
-    std::string m_Input;
+    std::ifstream m_Input;
 
     void consume();
     void consume(std::string &buff);
@@ -26,4 +27,6 @@ private:
     void FRACTIONF(std::string &buff);
     void EXPONENTF(std::string &buff);
     void DIGITS(std::string &buff);
+
+    void printState();
 };

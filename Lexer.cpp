@@ -2,9 +2,9 @@
 #include <cctype>
 #include "Lexer.h"
 
-Lexer::Lexer(const std::string &input) : m_Input(input) {
+Lexer::Lexer(const std::string &input) : m_Input(std::ifstream(input)) {
     m_Index = 0;
-    m_CurrentChar = m_Input[m_Index];
+    consume();
     std::cout << "Create Lexer" << std::endl;
 }
 
@@ -44,6 +44,7 @@ Token* Lexer::nextToken() {
             } else if (m_CurrentChar == '-' || isdigit(m_CurrentChar)) {
                 return NUMBERF();
             } else {
+                printState();
                 throw "Token Lexer::nextToken()";
             }
         }
@@ -53,13 +54,14 @@ Token* Lexer::nextToken() {
 
 void Lexer::consume() {
     m_Index++;
-    m_CurrentChar = m_Input[m_Index];
+    if (!(m_Input >> m_CurrentChar)) {
+        m_CurrentChar = '\0';
+    }
 }
 
 void Lexer::consume(std::string &buff) {
     buff += m_CurrentChar;
-    m_Index++;
-    m_CurrentChar = m_Input[m_Index];
+    consume();
 }
 
 void Lexer::WS() {
@@ -78,6 +80,7 @@ Token* Lexer::STRINGF() {
     if (m_CurrentChar == '"') {
         consume(buff);
     } else {
+        printState();
         throw "invalid char in string";
     }
 
@@ -90,11 +93,6 @@ Token* Lexer::NUMBERF() {
     INTEGERF(buff);
     FRACTIONF(buff);
     EXPONENTF(buff);
-
-    if (m_CurrentChar != ' ' && m_CurrentChar != '\t' &&
-            m_CurrentChar != '\n' && m_CurrentChar != '\r' && m_CurrentChar != 0) {
-        throw "invalid char, expecting white space or end of string char";
-    }
 
     return new Token(NUMBER, buff);
 }
@@ -111,6 +109,7 @@ void Lexer::INTEGERF(std::string &buff) {
             consume(buff);
         } while(isdigit(m_CurrentChar));
     } else {
+        printState();
         throw "invalid char, expecting digit";
     }
 }
@@ -128,6 +127,7 @@ void Lexer::EXPONENTF(std::string &buff) {
         consume(buff);
 
         if (m_CurrentChar != '+' && m_CurrentChar != '-') {
+            printState();
             throw "invalid char, expecting + or -";
         }
         consume(buff);
@@ -139,10 +139,15 @@ void Lexer::EXPONENTF(std::string &buff) {
 
 void Lexer::DIGITS(std::string &buff) {
     if (!isdigit(m_CurrentChar)) {
+        printState();
         throw "invalid char, expecting digit";
     }
 
     while (isdigit(m_CurrentChar)) {
         consume(buff);
     }
+}
+
+void Lexer::printState() {
+    std::cout << "m_CurrentChar: '" << m_CurrentChar << "' m_Index: " << m_Index << std::endl;
 }
