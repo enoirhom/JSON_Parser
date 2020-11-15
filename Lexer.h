@@ -2,6 +2,7 @@
 
 #include <fstream>
 #include "Token.h"
+#include "Log.h"
 
 class Lexer {
 public:

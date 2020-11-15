@@ -1,15 +1,14 @@
-#include <iostream>
 #include <cctype>
 #include "Lexer.h"
 
 Lexer::Lexer(const std::string &input) : m_Input(std::ifstream(input)) {
     m_Index = 0;
     consume();
-    std::cout << "Create Lexer" << std::endl;
+    l.printOLC("Create Lexer");
 }
 
 Lexer::~Lexer() {
-    std::cout << "Delete Lexer" << std::endl;
+    l.printOLC("Delete Lexer");
 }
 
 Token* Lexer::nextToken() {
@@ -162,5 +161,9 @@ void Lexer::DIGITS(std::string &buff) {
 }
 
 void Lexer::printState() {
-    std::cout << "m_CurrentChar: '" << m_CurrentChar << "' m_Index: " << m_Index << std::endl;
+    std::string s("m_CurrentChar: '");
+    s += m_CurrentChar;
+    s += "' m_Index: ";
+    s += m_Index;
+    l.printErr(s);
 }
