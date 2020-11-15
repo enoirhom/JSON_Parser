@@ -10,3 +10,5 @@ public:
     Token(int type, const std::string &text);
     ~Token();
 };
+
+std::ostream& operator<<(std::ostream &strm, const Token &tok);

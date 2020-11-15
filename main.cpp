@@ -11,7 +11,7 @@ int main(int argc, const char *argv[]) {
             Lexer lexer(argv[1]);
             Token *tok = lexer.nextToken();
             while (tok->m_Type != Lexer::EOF_TYPE) {
-                std::cout << "Type: " << tok->m_Type << ", " << tok->m_Text << std::endl;
+                std::cout << "Type: " << *tok << std::endl;
                 delete tok;
                 tok = lexer.nextToken();
             }
