@@ -1,6 +1,8 @@
 #include <cctype>
 #include "Lexer.h"
 
+std::string Lexer::TOKEN_NAMES[] = {"n/a", "<EOF>", "LCURL", "RCURL", "LBRACK", "RBRACK", "COLON", "COMMA", "STRING", "NUMBER"};
+
 Lexer::Lexer(const std::string &input) : m_Input(std::ifstream(input)) {
     m_Index = 0;
     consume();
@@ -13,8 +15,7 @@ Lexer::~Lexer() {
 
 Token* Lexer::nextToken() {
     while (m_CurrentChar != '\0') {
-        if (m_CurrentChar == ' ' || m_CurrentChar == '\t' ||
-                m_CurrentChar == '\n' || m_CurrentChar == '\r') {
+        if (isWS()) {
             WS();
             continue;
         }
@@ -64,8 +65,7 @@ void Lexer::consume(std::string &buff) {
 }
 
 void Lexer::WS() {
-    while (m_CurrentChar == ' ' || m_CurrentChar == '\t' ||
-            m_CurrentChar == '\n' || m_CurrentChar == '\r') {
+    while (isWS()) {
         consume();
     }
 }
@@ -78,10 +78,10 @@ Token* Lexer::STRINGF() {
     while (m_CurrentChar != '"' && m_CurrentChar != '\0') {
         if (m_CurrentChar == '\\') {
             consume(buff);
-            if (!(m_CurrentChar == '"' || m_CurrentChar == '\\' || m_CurrentChar == '/' ||
-                    m_CurrentChar == 'b' || m_CurrentChar == 'f' ||
-                    m_CurrentChar == 'n' || m_CurrentChar == 'r' ||
-                    m_CurrentChar == 't')) {
+            if (!(m_CurrentChar == '"' || m_CurrentChar == '\\' ||
+                    m_CurrentChar == '/' || m_CurrentChar == 'b' ||
+                    m_CurrentChar == 'f' || m_CurrentChar == 'n' ||
+                    m_CurrentChar == 'r' || m_CurrentChar == 't')) {
                 printState();
                 throw "invalid escape char";
             }
@@ -146,7 +146,6 @@ void Lexer::EXPONENTF(std::string &buff) {
 
         DIGITS(buff);
     }
-
 }
 
 void Lexer::DIGITS(std::string &buff) {
@@ -166,4 +165,9 @@ void Lexer::printState() {
     s += "' m_Index: ";
     s += m_Index;
     l.printErr(s);
+}
+
+bool Lexer::isWS() {
+    return m_CurrentChar == ' ' || m_CurrentChar == '\t' ||
+            m_CurrentChar == '\n' || m_CurrentChar == '\r';
 }

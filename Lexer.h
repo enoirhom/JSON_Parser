@@ -6,8 +6,9 @@
 
 class Lexer {
 public:
-    static const int EOF_TYPE = 0, LCURL = 1, RCURL = 2, LBRACK = 3, RBRACK = 4,
-        COLON = 5, COMMA = 6, STRING = 7, NUMBER = 8;
+    static const int EOF_TYPE = 1, LCURL = 2, RCURL = 3, LBRACK = 4, RBRACK = 5,
+        COLON = 6, COMMA = 7, STRING = 8, NUMBER = 9;
+    static std::string TOKEN_NAMES[];
 
     Lexer(const std::string &input);
     ~Lexer();
@@ -30,4 +31,5 @@ private:
     void DIGITS(std::string &buff);
 
     void printState();
+    bool isWS();
 };

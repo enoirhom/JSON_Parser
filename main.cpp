@@ -13,11 +13,11 @@ int main(int argc, const char *argv[]) {
         try {
             l.printMess(argv[1]);
             Lexer lexer(argv[1]);
-            Token *tok = lexer.nextToken();
-            while (tok->m_Type != Lexer::EOF_TYPE) {
+            Token *tok = nullptr;
+            while (tok == nullptr || tok->m_Type != Lexer::EOF_TYPE) {
+                tok = lexer.nextToken();
                 l.printTok(*tok);
                 delete tok;
-                tok = lexer.nextToken();
             }
         } catch(char const *e) {
             l.printErr(e);
