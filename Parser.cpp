@@ -2,11 +2,12 @@
 
 Parser::Parser(Lexer &lexer) : m_Input(lexer), m_Lookahead(nullptr) {
     consume();
-    l.printOLC("Create Parser");
 }
 
 Parser::~Parser() {
-    l.printOLC("Delete Parser");
+    if (m_Lookahead != nullptr) {
+        delete m_Lookahead;
+    }
 }
 
 void Parser::json() {

@@ -2,7 +2,6 @@
 
 #include "Lexer.h"
 #include "Token.h"
-#include "Log.h"
 
 class Parser {
 public:

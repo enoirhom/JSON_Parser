@@ -1,4 +1,5 @@
 #include <cctype>
+#include <iostream>
 #include "Lexer.h"
 
 std::string Lexer::TOKEN_NAMES[] = {"n/a", "<EOF>", "LCURL", "RCURL", "LBRACK", "RBRACK", "COLON", "COMMA", "STRING", "NUMBER"};
@@ -6,11 +7,9 @@ std::string Lexer::TOKEN_NAMES[] = {"n/a", "<EOF>", "LCURL", "RCURL", "LBRACK", 
 Lexer::Lexer(const std::string &input) : m_Input(std::ifstream(input)) {
     m_Index = 0;
     consume();
-    l.printOLC("Create Lexer");
 }
 
 Lexer::~Lexer() {
-    l.printOLC("Delete Lexer");
 }
 
 Token* Lexer::nextToken() {
@@ -164,7 +163,7 @@ void Lexer::printState() {
     s += m_CurrentChar;
     s += "' m_Index: ";
     s += m_Index;
-    l.printErr(s);
+    std::cout << s << std::endl;
 }
 
 bool Lexer::isWS() {

@@ -1,6 +1,5 @@
 #include <iostream>
 #include "Token.h"
-#include "Log.h"
 #include "Lexer.h"
 
 std::ostream& operator<<(std::ostream &strm, const Token &tok) {
@@ -8,9 +7,7 @@ std::ostream& operator<<(std::ostream &strm, const Token &tok) {
 }
 
 Token::Token(int type, const std::string &text) : m_Type(type), m_Text(text) {
-    l.printOLC("Create Token");
 }
 
 Token::~Token() {
-    l.printOLC("Delete Token");
 }
