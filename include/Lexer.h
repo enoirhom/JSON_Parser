@@ -15,7 +15,10 @@ public:
 
 private:
     char m_CurrentChar;
+    char m_LookaheadChar;
     int m_Index;
+    int m_Line;
+    int m_IndexInLine;
     std::ifstream m_Input;
 
     void consume();
@@ -30,5 +33,6 @@ private:
     void DIGITS(std::string &buff);
 
     void printState();
+    void getNextChar();
     bool isWS();
 };
