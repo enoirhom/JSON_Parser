@@ -16,7 +16,6 @@ public:
 private:
     char m_CurrentChar;
     char m_LookaheadChar;
-    int m_Index;
     int m_Line;
     int m_IndexInLine;
     std::ifstream m_Input;
@@ -32,7 +31,6 @@ private:
     void EXPONENTF(std::string &buff);
     void DIGITS(std::string &buff);
 
-    void printState();
     void getNextChar();
     bool isWS();
 };
