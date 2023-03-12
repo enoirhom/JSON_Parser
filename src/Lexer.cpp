@@ -4,57 +4,52 @@
 
 std::string Lexer::TOKEN_NAMES[] = {"n/a", "<EOF>", "LCURL", "RCURL", "LBRACK", "RBRACK", "COLON", "COMMA", "STRING", "NUMBER"};
 
-Lexer::Lexer(const std::string &input) : m_Input(std::ifstream(input)) {
-    m_Index = 0;
-    consume();
+Lexer::Lexer(const std::string &input) : m_Input(std::ifstream(input)), m_Line(1), m_IndexInLine(0) {
+    m_Input.unsetf(std::ios_base::skipws);
+    getNextChar();
 }
 
-Lexer::~Lexer() {
-}
+Lexer::~Lexer() { }
 
 Token* Lexer::nextToken() {
-    while (m_CurrentChar != '\0') {
-        if (isWS()) {
-            WS();
-            continue;
-        }
-        switch (m_CurrentChar) {
-        case '{':
-            consume();
-            return new Token(LCURL, "{");
-        case '}':
-            consume();
-            return new Token(RCURL, "}");
-        case '[':
-            consume();
-            return new Token(LBRACK, "[");
-        case ']':
-            consume();
-            return new Token(RBRACK, "]");
-        case ':':
-            consume();
-            return new Token(COLON, ":");
-        case ',':
-            consume();
-            return new Token(COMMA, ",");
-        default:
-            if (m_CurrentChar == '"') {
-                return STRINGF();
-            } else if (m_CurrentChar == '-' || isdigit(m_CurrentChar)) {
-                return NUMBERF();
-            } else {
-                printState();
-                throw "Token Lexer::nextToken()";
-            }
+    consume();
+    WS();
+
+    switch (m_CurrentChar) {
+    case '\0':
+        return new Token(EOF_TYPE, "<EOF>", m_Line, m_IndexInLine);
+    case '{':
+        return new Token(LCURL, "{", m_Line, m_IndexInLine);
+    case '}':
+        return new Token(RCURL, "}", m_Line, m_IndexInLine);
+    case '[':
+        return new Token(LBRACK, "[", m_Line, m_IndexInLine);
+    case ']':
+        return new Token(RBRACK, "]", m_Line, m_IndexInLine);
+    case ':':
+        return new Token(COLON, ":", m_Line, m_IndexInLine);
+    case ',':
+        return new Token(COMMA, ",", m_Line, m_IndexInLine);
+    default:
+        if (m_CurrentChar == '"') {
+            return STRINGF();
+        } else if (m_CurrentChar == '-' || isdigit(m_CurrentChar)) {
+            return NUMBERF();
+        } else {
+            throw "Token Lexer::nextToken()";
         }
     }
-    return new Token(EOF_TYPE, "<EOF>");
 }
 
 void Lexer::consume() {
-    m_Index++;
-    if (!(m_Input >> m_CurrentChar)) {
-        m_CurrentChar = '\0';
+    m_IndexInLine += 1;
+    m_CurrentChar = m_LookaheadChar;
+
+    getNextChar();
+
+    if (m_CurrentChar == '\n') {
+        m_Line += 1;
+        m_IndexInLine = 0;
     }
 }
 
@@ -74,6 +69,8 @@ Token* Lexer::STRINGF() {
 
     consume();
 
+    int start = m_IndexInLine;
+
     while (m_CurrentChar != '"' && m_CurrentChar != '\0') {
         if (m_CurrentChar == '\\') {
             consume(buff);
@@ -81,31 +78,29 @@ Token* Lexer::STRINGF() {
                     m_CurrentChar == '/' || m_CurrentChar == 'b' ||
                     m_CurrentChar == 'f' || m_CurrentChar == 'n' ||
                     m_CurrentChar == 'r' || m_CurrentChar == 't')) {
-                printState();
                 throw "invalid escape char";
             }
         }
         consume(buff);
     }
 
-    if (m_CurrentChar == '"') {
-        consume();
-    } else {
-        printState();
+    if (m_CurrentChar != '"') {
         throw "reaching end of file before end of string";
     }
 
-    return new Token(STRING, buff);
+    return new Token(STRING, buff, m_Line, start);
 }
 
 Token* Lexer::NUMBERF() {
     std::string buff;
 
+    int start = m_IndexInLine;
+
     INTEGERF(buff);
     FRACTIONF(buff);
     EXPONENTF(buff);
 
-    return new Token(NUMBER, buff);
+    return new Token(NUMBER, buff, m_Line, start);
 }
 
 void Lexer::INTEGERF(std::string &buff) {
@@ -116,11 +111,11 @@ void Lexer::INTEGERF(std::string &buff) {
     if (m_CurrentChar == '0') {
         consume(buff);
     } else if (isdigit(m_CurrentChar)) {
-        do {
+        while (isdigit(m_LookaheadChar)) {
             consume(buff);
-        } while(isdigit(m_CurrentChar));
+        }
+        buff += m_CurrentChar;
     } else {
-        printState();
         throw "invalid char, expecting digit";
     }
 }
@@ -138,7 +133,6 @@ void Lexer::EXPONENTF(std::string &buff) {
         consume(buff);
 
         if (m_CurrentChar != '+' && m_CurrentChar != '-') {
-            printState();
             throw "invalid char, expecting + or -";
         }
         consume(buff);
@@ -149,7 +143,6 @@ void Lexer::EXPONENTF(std::string &buff) {
 
 void Lexer::DIGITS(std::string &buff) {
     if (!isdigit(m_CurrentChar)) {
-        printState();
         throw "invalid char, expecting digit";
     }
 
@@ -158,12 +151,10 @@ void Lexer::DIGITS(std::string &buff) {
     }
 }
 
-void Lexer::printState() {
-    std::string s("m_CurrentChar: '");
-    s += m_CurrentChar;
-    s += "' m_Index: ";
-    s += m_Index;
-    std::cout << s << std::endl;
+void Lexer::getNextChar() {
+    if (!(m_Input >> m_LookaheadChar)) {
+        m_CurrentChar = '\0';
+    }
 }
 
 bool Lexer::isWS() {
