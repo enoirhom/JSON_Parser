@@ -14,11 +14,13 @@ public:
     Token* nextToken();
 
 private:
-    char m_CurrentChar;
-    char m_LookaheadChar;
+    std::ifstream m_Input;
     int m_Line;
     int m_IndexInLine;
-    std::ifstream m_Input;
+    
+    char m_CurrentChar;
+    char m_LookaheadChar;
+
 
     void consume();
     void consume(std::string &buff);
