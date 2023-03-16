@@ -1,6 +1,6 @@
 #pragma once
 
-#include <fstream>
+#include <istream>
 #include "Token.h"
 
 class Lexer {
@@ -9,18 +9,17 @@ public:
         COLON = 6, COMMA = 7, STRING = 8, NUMBER = 9;
     static std::string TOKEN_NAMES[];
 
-    Lexer(const std::string &input);
+    Lexer(std::istream* stream);
     ~Lexer();
     Token* nextToken();
 
 private:
-    std::ifstream m_Input;
+    std::istream* m_Input;
     int m_Line;
     int m_IndexInLine;
-    
+
     char m_CurrentChar;
     char m_LookaheadChar;
-
 
     void consume();
     void consume(std::string &buff);
