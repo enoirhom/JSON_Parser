@@ -4,8 +4,8 @@
 
 std::string Lexer::TOKEN_NAMES[] = {"n/a", "<EOF>", "LCURL", "RCURL", "LBRACK", "RBRACK", "COLON", "COMMA", "STRING", "NUMBER"};
 
-Lexer::Lexer(const std::string &input) : m_Input(std::ifstream(input)), m_Line(1), m_IndexInLine(0) {
-    m_Input.unsetf(std::ios_base::skipws);
+Lexer::Lexer(std::istream* stream) : m_Input(stream), m_Line(1), m_IndexInLine(0) {
+    m_Input->unsetf(std::ios_base::skipws);
     getNextChar();
 }
 
@@ -152,7 +152,7 @@ void Lexer::DIGITS(std::string &buff) {
 }
 
 void Lexer::getNextChar() {
-    if (!(m_Input >> m_LookaheadChar)) {
+    if (!((*m_Input) >> m_LookaheadChar)) {
         m_CurrentChar = '\0';
     }
 }
