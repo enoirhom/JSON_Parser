@@ -24,7 +24,7 @@ void test(const std::string& input, int expectedType) {
 }
 
 TEST(LexerTest, Numbers) {
-    std::string inputs[] = {"0", "0.0", "10", "10.10", "10.01", "1e19", "1e+19",
+    std::string inputs[] = {"0", "0.0", "0.1", "0.09", "10", "10.10", "10.01", "1e19", "1e+19",
         "1e-19", "1E19", "1E+19", "1E-19", "1.23e3", "1.23e+3", "1.23e-3"};
 
     for (std::string input : inputs) {
@@ -33,7 +33,7 @@ TEST(LexerTest, Numbers) {
 }
 
 TEST(LexerTest, NegativeNumbers) {
-    std::string inputs[] = {"-0", "-0.0", "-10", "-10.10", "-10.01", "-1e19",
+    std::string inputs[] = {"-0", "-0.0", "-0.1", "-0.09", "-10", "-10.10", "-10.01", "-1e19",
         "-1e+19", "-1e-19", "-1E19", "-1E+19", "-1E-19", "-1.23e3", "-1.23e+3",
         "-1.23e-3"};
 
