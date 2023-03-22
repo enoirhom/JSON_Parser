@@ -36,7 +36,18 @@ Token* Lexer::nextToken() {
         } else if (m_CurrentChar == '-' || isdigit(m_CurrentChar)) {
             return NUMBERF();
         } else {
-            throw "Token Lexer::nextToken()";
+            if (m_CurrentChar == 't') {
+                TRUEF();
+                return new Token(TRUE, "true", m_Line, m_IndexInLine);
+            } else if (m_CurrentChar == 'f') {
+                FALSEF();
+                return new Token(FALSE, "false", m_Line, m_IndexInLine);
+            } else if (m_CurrentChar == 'n') {
+                NULLF();
+                return new Token(NULL_TYPE, "null", m_Line, m_IndexInLine);
+            } else {
+                throw "Token Lexer::nextToken()";
+            }
         }
     }
 }
@@ -110,7 +121,7 @@ void Lexer::INTEGERF(std::string &buff) {
     }
 
     if (m_CurrentChar == '0') {
-        consume(buff);
+        buff += m_CurrentChar;
     } else if (isdigit(m_CurrentChar)) {
         while (isdigit(m_LookaheadChar)) {
             consume(buff);
@@ -152,9 +163,50 @@ void Lexer::DIGITS(std::string &buff) {
     }
 }
 
+void Lexer::TRUEF() {
+    match('t');
+    match('r');
+    match('u');
+
+    if (m_CurrentChar != 'e') {
+        // do something!
+    }
+}
+
+void Lexer::FALSEF() {
+    match('f');
+    match('a');
+    match('l');
+    match('s');
+
+    if (m_CurrentChar != 'e') {
+        // do something!
+    }
+}
+
+void Lexer::NULLF() {
+    match('n');
+    match('u');
+    match('l');
+
+    if (m_CurrentChar != 'l') {
+        // do something!
+    }
+}
+
 void Lexer::getNextChar() {
     if (!((*m_Input) >> m_LookaheadChar)) {
         m_LookaheadChar = '\0';
+    }
+}
+
+void Lexer::match(char c) {
+    if (m_CurrentChar == c) {
+        consume();
+    } else {
+        std::string message = "invalid char, expecting ";
+        message += c;
+        throw message;
     }
 }
 

@@ -63,5 +63,5 @@ TEST(LexerTest, JSONMarkers) {
 TEST(LexerTest, JSONLiterals) {
     test("true", Lexer::TRUE);
     test("false", Lexer::FALSE);
-    test("null", Lexer::NULL_LIT);
+    test("null", Lexer::NULL_TYPE);
 }
