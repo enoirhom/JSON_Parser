@@ -1,12 +1,13 @@
 #pragma once
 
 #include <istream>
-#include "Token.h"
+#include "Token.hpp"
 
 class Lexer {
 public:
     static const int EOF_TYPE = 1, LCURL = 2, RCURL = 3, LBRACK = 4, RBRACK = 5,
-        COLON = 6, COMMA = 7, STRING = 8, NUMBER = 9;
+        COLON = 6, COMMA = 7, TRUE = 8, FALSE = 9, NULL_LIT = 10, STRING = 11,
+        NUMBER = 12;
     static std::string TOKEN_NAMES[];
 
     Lexer(std::istream* stream);

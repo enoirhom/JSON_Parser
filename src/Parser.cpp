@@ -1,4 +1,4 @@
-#include "Parser.h"
+#include "../include/Parser.hpp"
 
 Parser::Parser(Lexer &lexer) : m_Input(lexer), m_Lookahead(nullptr) {
     consume();

@@ -2,10 +2,26 @@ cmake_minimum_required(VERSION 3.19.1)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
 project(json_parser)
 
-file(GLOB_RECURSE SRC_FILES src/*.cpp)
-add_executable(${PROJECT_NAME} ${SRC_FILES})
-install(TARGETS ${PROJECT_NAME} DESTINATION bin)
-target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
+enable_testing()
+
+add_subdirectory(googletest)
+
+set(Headers
+    include/Lexer.hpp
+    include/Parser.hpp
+    include/Token.hpp
+)
+
+set(Sources
+    src/Lexer.cpp
+    src/Parser.cpp
+    src/Token.cpp
+)
+
+add_library(${PROJECT_NAME} STATIC ${Sources} ${Headers})
+
+add_subdirectory(test)

@@ -1,6 +1,6 @@
 #include <cctype>
 #include <iostream>
-#include "Lexer.h"
+#include "../include/Lexer.hpp"
 
 std::string Lexer::TOKEN_NAMES[] = {"n/a", "<EOF>", "LCURL", "RCURL", "LBRACK", "RBRACK", "COLON", "COMMA", "STRING", "NUMBER"};
 
@@ -74,6 +74,7 @@ Token* Lexer::STRINGF() {
     while (m_CurrentChar != '"' && m_CurrentChar != '\0') {
         if (m_CurrentChar == '\\') {
             consume(buff);
+            // TODO: add unicode codepoint (i.e.: \u000A)
             if (!(m_CurrentChar == '"' || m_CurrentChar == '\\' ||
                     m_CurrentChar == '/' || m_CurrentChar == 'b' ||
                     m_CurrentChar == 'f' || m_CurrentChar == 'n' ||
@@ -121,6 +122,7 @@ void Lexer::INTEGERF(std::string &buff) {
 }
 
 void Lexer::FRACTIONF(std::string &buff) {
+    consume();
     if (m_CurrentChar == '.') {
         consume(buff);
 
@@ -132,10 +134,9 @@ void Lexer::EXPONENTF(std::string &buff) {
     if (m_CurrentChar == 'e' || m_CurrentChar == 'E') {
         consume(buff);
 
-        if (m_CurrentChar != '+' && m_CurrentChar != '-') {
-            throw "invalid char, expecting + or -";
+        if (m_CurrentChar == '+' || m_CurrentChar == '-') {
+            consume(buff);
         }
-        consume(buff);
 
         DIGITS(buff);
     }
@@ -153,7 +154,7 @@ void Lexer::DIGITS(std::string &buff) {
 
 void Lexer::getNextChar() {
     if (!((*m_Input) >> m_LookaheadChar)) {
-        m_CurrentChar = '\0';
+        m_LookaheadChar = '\0';
     }
 }
 

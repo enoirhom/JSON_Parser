@@ -1,7 +1,7 @@
 #pragma once
 
-#include "Lexer.h"
-#include "Token.h"
+#include "Lexer.hpp"
+#include "Token.hpp"
 
 class Parser {
 public:

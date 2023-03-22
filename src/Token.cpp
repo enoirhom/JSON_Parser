@@ -1,6 +1,6 @@
 #include <iostream>
-#include "Token.h"
-#include "Lexer.h"
+#include "../include/Token.hpp"
+#include "../include/Lexer.hpp"
 
 std::ostream& operator<<(std::ostream &strm, const Token &tok) {
     return strm << "Token(" << Lexer::TOKEN_NAMES[tok.m_Type] << " at " << tok.m_Line << ":" << tok.m_StartIndex << ", " << tok.m_Text << ")";
