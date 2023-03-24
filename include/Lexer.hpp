@@ -28,13 +28,14 @@ private:
     void WS();
     Token* STRINGF();
     Token* NUMBERF();
+    Token* TRUEF();
+    Token* FALSEF();
+    Token* NULLF();
+
     void INTEGERF(std::string &buff);
     void FRACTIONF(std::string &buff);
     void EXPONENTF(std::string &buff);
     void DIGITS(std::string &buff);
-    void TRUEF();
-    void FALSEF();
-    void NULLF();
 
     void getNextChar();
     void match(char c);
