@@ -1,6 +1,5 @@
 #include <gtest/gtest.h>
 #include <sstream>
-#include <fstream>
 #include <string>
 #include "../include/Lexer.hpp"
 
